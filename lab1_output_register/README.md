@@ -36,9 +36,10 @@ PORTB = 0b00100000;
 
 So in order to blink the led of the atmega328p PORTB bit 5, we need a delay. To do that we need a delay function which need to define the clock of the atmega328P
 
+```sh
 #define F_CPU 16000000UL // clock of the atmega328p is 16MHz
 #include <util/delay.h> // include delay library
-
+```
 
 Then in the main code, we can write 
 ```sh
