@@ -95,4 +95,6 @@ void blink_ms(uint16_t ms){
 
 }
 ``` 
-  
+## Result 
+
+ ![TCCR0A](https://github.com/Theara-Seng/atmega328p_register_lab/blob/main/lab4_timer0_interrupt_normal_mode/lab4_image/result.png)
