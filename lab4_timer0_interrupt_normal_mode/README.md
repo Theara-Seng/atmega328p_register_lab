@@ -6,9 +6,9 @@ The same as polling mode we will use normal mode with prescaler 64, so we can wr
 
 ```sh
 DDRB = 1<<PB5;
-	TCCR0A = 0x00; //Normal Mode
-	TCCR0B = 1<<CS00 | 1<<CS01; // using prescaler 64
-	TCNT0 = 6; // set 1ms delay
+TCCR0A = 0x00; //Normal Mode
+TCCR0B = 1<<CS00 | 1<<CS01; // using prescaler 64
+TCNT0 = 6; // set 1ms delay
  ```
  
  After that we need to generate a timer interrupt 
@@ -18,8 +18,8 @@ DDRB = 1<<PB5;
  We can write
  
  ```sh
- 	TIMSK0 = 1 << TOIE0; // select timer0 overflow interrupt
-	sei(); // Enable global Interrupt
+TIMSK0 = 1 << TOIE0; // select timer0 overflow interrupt
+sei(); // Enable global Interrupt
   ```
   
  Create a global variable count 
