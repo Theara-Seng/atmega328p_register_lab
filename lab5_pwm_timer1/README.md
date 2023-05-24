@@ -12,7 +12,7 @@ By choosing the bit COM1A1/COM1B1 and COM1A0/COM1B0, we can choose the non-inver
 
 ### Non-Inverting Mode Selection
 
-we can write 
+We can write 
 
 ```sh
 TCCR1A = (1<<COM1A1)
