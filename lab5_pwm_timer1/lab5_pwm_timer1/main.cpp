@@ -9,11 +9,11 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
-void pwm_8bit_nm(uint8_t duty);
+void pwm_8bit_nm(uint8_t duty1 );
 void pwm_8bit_im(uint8_t duty);
 void pwm_9bit_nm(uint16_t duty);
 void pwm_9bit_im(uint16_t duty);
-void pwm_10bit_nm(uint32_t duty);
+void pwm_10bit_nm(uint32_t duty1, uint32_t duty2);
 void pwm_10bit_im(uint32_t duty);
 
 int main(void)
@@ -23,8 +23,8 @@ int main(void)
 	DDRB |= 1<<PB1 | 1<< PB2;
     while (1) 
     {
-		pwm_10bit_im();
-		pwm_10bit_nm()
+		//pwm_10bit_im(30);
+		pwm_10bit_nm(50, 30);  // PB1 = 50% and PB2 = 30%
     }
 }
 
@@ -56,7 +56,7 @@ void pwm_9bit_nm(uint16_t duty){
 void pwm_9bit_im(uint16_t duty){
 	// Inverting Mode
 	// Frequency = F_cpu/ 512*N = 16*10^6/ 512*8 = 3906.25Hz
-	// OCR1B = 512 - 512*D/100;
+	// OCR1B = 511 - 512*D/100;
 	OCR1B = 511 - ((512*duty)/100);
 	TCCR1A = (1<<COM1B1)| (1<<COM1B0) | 1<<WGM11; // inverting Mode and Fast PWM 9-BIT
 	TCCR1B = (1<<WGM12) | 1<<CS11; // Prescaler 8
@@ -69,11 +69,12 @@ void pwm_10bit_im(uint32_t duty){
 	TCCR1A = (1<<COM1B1)| (1<<COM1B0) | (1<<WGM10) | 1<<WGM11; // Inverting Mode and Fast PWM 10-BIT
 	TCCR1B = (1<<WGM12) | 1<<CS10; // Prescaler 1
 }
-void pwm_10bit_nm(uint32_t duty){
+void pwm_10bit_nm(uint32_t duty1, uint32_t duty2 ){
 	//Non Inverting Mode
 	// Frequency = F_cpu/ 1024 = 16*10^6/ 1024 = 15625 HZ
 	// duty cycle: OCR1A = 1024D/100 - 1 => D = (OCR1A+1)*100/256;
-	OCR1A = ((1024*duty)/100)-1;
-	TCCR1A = (1<<COM1A1) | (1<<WGM10) | (1<<WGM11); // Non-inverting Mode and Fast PWM 9-BIT
+	OCR1A = ((1024*duty1)/100)-1;
+	OCR1B = ((1024*duty2)/100)-1;
+	TCCR1A = (1<<COM1A1) | (1<<COM1B1) | (1<<WGM10) | (1<<WGM11); // Non-inverting Mode and Fast PWM 10-BIT
 	TCCR1B = (1<<WGM12) | 1<<CS10; // Prescaler 1
 }

@@ -8,18 +8,18 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
-
+#include <util/delay.h>
 ISR(INT0_vect){
 	_delay_ms(50);
 	if (bit_is_clear(PIND,PD2)){
-		PORTD ^= 1<<PD5;
+		PORTD ^= 1<<PD4;
 	}
 }
 
 ISR(INT1_vect){
 	_delay_ms(50);
 	if (bit_is_clear(PIND,PD3)){
-		PORTD ^= 1<<PD5;
+		PORTD ^= 1<<PD4;
 	}
 }
 
@@ -32,6 +32,7 @@ int main(void)
 	sei(); //enable global interrupt
 	while (1)
 	{
-	
+		PORTD ^= 1<<PD4;
+		_delay_ms(1000);
 	}
 }

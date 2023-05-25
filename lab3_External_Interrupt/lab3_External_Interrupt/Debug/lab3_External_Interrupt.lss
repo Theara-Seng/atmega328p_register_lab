@@ -3,29 +3,29 @@ lab3_External_Interrupt.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000000  00800100  00800100  00000166  2**0
+  0 .data         00000000  00800100  00800100  00000180  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         00000112  00000000  00000000  00000054  2**1
+  1 .text         0000012c  00000000  00000000  00000054  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .comment      00000030  00000000  00000000  00000166  2**0
+  2 .comment      00000030  00000000  00000000  00000180  2**0
                   CONTENTS, READONLY
-  3 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000198  2**2
+  3 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  000001b0  2**2
                   CONTENTS, READONLY
-  4 .debug_aranges 00000030  00000000  00000000  000001d8  2**0
+  4 .debug_aranges 00000030  00000000  00000000  000001f0  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   00000772  00000000  00000000  00000208  2**0
+  5 .debug_info   000007aa  00000000  00000000  00000220  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 00000678  00000000  00000000  0000097a  2**0
+  6 .debug_abbrev 00000693  00000000  00000000  000009ca  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   000002a9  00000000  00000000  00000ff2  2**0
+  7 .debug_line   000002c0  00000000  00000000  0000105d  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  0000007c  00000000  00000000  0000129c  2**2
+  8 .debug_frame  0000007c  00000000  00000000  00001320  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    000003cf  00000000  00000000  00001318  2**0
+  9 .debug_str    000003cf  00000000  00000000  0000139c  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    0000013c  00000000  00000000  000016e7  2**0
+ 10 .debug_loc    0000013c  00000000  00000000  0000176b  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000020  00000000  00000000  00001823  2**0
+ 11 .debug_ranges 00000020  00000000  00000000  000018a7  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -66,7 +66,7 @@ Disassembly of section .text:
   70:	de bf       	out	0x3e, r29	; 62
   72:	cd bf       	out	0x3d, r28	; 61
   74:	0e 94 7e 00 	call	0xfc	; 0xfc <main>
-  78:	0c 94 87 00 	jmp	0x10e	; 0x10e <_exit>
+  78:	0c 94 94 00 	jmp	0x128	; 0x128 <_exit>
 
 0000007c <__bad_interrupt>:
   7c:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
@@ -76,7 +76,7 @@ Disassembly of section .text:
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
-
+#include <util/delay.h>
 ISR(INT0_vect){
   80:	1f 92       	push	r1
   82:	0f 92       	push	r0
@@ -105,9 +105,9 @@ ISR(INT0_vect){
 	if (bit_is_clear(PIND,PD2)){
   a2:	4a 99       	sbic	0x09, 2	; 9
   a4:	04 c0       	rjmp	.+8      	; 0xae <__vector_1+0x2e>
-		PORTD ^= 1<<PD5;
+		PORTD ^= 1<<PD4;
   a6:	9b b1       	in	r25, 0x0b	; 11
-  a8:	80 e2       	ldi	r24, 0x20	; 32
+  a8:	80 e1       	ldi	r24, 0x10	; 16
   aa:	89 27       	eor	r24, r25
   ac:	8b b9       	out	0x0b, r24	; 11
 	}
@@ -145,9 +145,9 @@ ISR(INT1_vect){
 	if (bit_is_clear(PIND,PD3)){
   e0:	4b 99       	sbic	0x09, 3	; 9
   e2:	04 c0       	rjmp	.+8      	; 0xec <__vector_2+0x2e>
-		PORTD ^= 1<<PD5;
+		PORTD ^= 1<<PD4;
   e4:	9b b1       	in	r25, 0x0b	; 11
-  e6:	80 e2       	ldi	r24, 0x20	; 32
+  e6:	80 e1       	ldi	r24, 0x10	; 16
   e8:	89 27       	eor	r24, r25
   ea:	8b b9       	out	0x0b, r24	; 11
 	}
@@ -177,10 +177,26 @@ int main(void)
  106:	80 93 69 00 	sts	0x0069, r24	; 0x800069 <__TEXT_REGION_LENGTH__+0x7f8069>
 	sei(); //enable global interrupt
  10a:	78 94       	sei
- 10c:	ff cf       	rjmp	.-2      	; 0x10c <main+0x10>
+	while (1)
+	{
+		PORTD ^= 1<<PD4;
+ 10c:	9b b1       	in	r25, 0x0b	; 11
+ 10e:	80 e1       	ldi	r24, 0x10	; 16
+ 110:	89 27       	eor	r24, r25
+ 112:	8b b9       	out	0x0b, r24	; 11
+ 114:	2f ef       	ldi	r18, 0xFF	; 255
+ 116:	83 ed       	ldi	r24, 0xD3	; 211
+ 118:	90 e3       	ldi	r25, 0x30	; 48
+ 11a:	21 50       	subi	r18, 0x01	; 1
+ 11c:	80 40       	sbci	r24, 0x00	; 0
+ 11e:	90 40       	sbci	r25, 0x00	; 0
+ 120:	e1 f7       	brne	.-8      	; 0x11a <main+0x1e>
+ 122:	00 c0       	rjmp	.+0      	; 0x124 <main+0x28>
+ 124:	00 00       	nop
+ 126:	f2 cf       	rjmp	.-28     	; 0x10c <main+0x10>
 
-0000010e <_exit>:
- 10e:	f8 94       	cli
+00000128 <_exit>:
+ 128:	f8 94       	cli
 
-00000110 <__stop_program>:
- 110:	ff cf       	rjmp	.-2      	; 0x110 <__stop_program>
+0000012a <__stop_program>:
+ 12a:	ff cf       	rjmp	.-2      	; 0x12a <__stop_program>
