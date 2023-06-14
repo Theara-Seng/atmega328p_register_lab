@@ -59,5 +59,20 @@ UCSR0C = (1 << UCSZ01) | (1 << UCSZ00);   /* 8 data bits, 1 stop bit */
 
 In order to transmit the data we need to wait for the old data to send it all, by releasing we need to wait for the buffer to be cleard. 
 
-The register for the buffer to be clear is 
+The register for the buffer to be clear is the USART0A and the UDRE0 as shown in the image below 
+
+
+![BAUDRATE](https://github.com/Theara-Seng/atmega328p_register_lab/blob/main/lab6_uart/image/USART0A.png)
+
+As detail above, we need to wait for the bit UDRE0 = 1 then the data can be transmit using USR0 = data 
+
+
+```sh
+void transmitByte(uint8_t data) {
+	/* Wait for empty transmit buffer */
+	while ((UCSR0A & (1<<UDRE0))==0);
+	//loop_until_bit_is_set(UCSR0A, UDRE0);
+	UDR0 = data;                                            /* send data */
+}
+```
 
