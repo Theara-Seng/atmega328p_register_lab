@@ -76,3 +76,15 @@ void transmitByte(uint8_t data) {
 }
 ```
 
+## Receive Data 
+
+In order to receive the data from the transmitter, we also need wait for the data to be empty first by waiting the RXC0 to be set 
+Then we can write 
+
+```sh
+uint8_t receiveByte(void) {
+  while ((UCSR0A & (1<<RXC0))==0);      /* Wait for incoming data */
+  return UDR0;                                /* return register value */
+}
+```
+
